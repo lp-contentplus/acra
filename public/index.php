@@ -20,12 +20,26 @@ use Monolog\Logger;
 
 $config = require __DIR__ . '/../config.php';
 
+$varDir = __DIR__ . '/../var/';
+if (!is_dir($varDir)) {
+    throw new \Exception('Missing var directory');
+}
+
+$logFile = "$varDir/acra.log";
+if (!touch($logFile)) {
+    throw new \Exception('Log file not writeable');
+}
+
 // create a log channel
 $log = new Logger('acra');
-$log->pushHandler(new StreamHandler('var/acra.log', Logger::WARNING));
+$log->pushHandler(new StreamHandler($logFile, Logger::WARNING));
 
 $input = file_get_contents('php://input');
 $service = $_GET['as'] ?? null;
+
+if ($_GET['test'] ?? '') {
+    $log->error("[info] Test entry");
+}
 
 if (!$input || !$service) {
     exit();
@@ -36,13 +50,19 @@ if ($input) {
     // add records to the log
     $log->error("[$service]", $input);
 
-    $connection = DriverManager::getConnection($config['connection']);
-    $connection->executeUpdate(
-        'INSERT INTO log (log) VALUES (?)',
-        json_encode([
-            $input
-        ])
-    );
+    try {
+        $connection = DriverManager::getConnection($config['connection']);
+        $connection->executeUpdate(
+            'INSERT INTO log (log) VALUES (?)',
+            [
+                json_encode([
+                    $input
+                ])
+            ]
+        );
+    } catch (\Throwable $e) {
+        $log->error("[$service] Fatal error: " . $e->__toString());
+    }
 } else {
     $log->warning("[$service] Invalid request received");
 }
