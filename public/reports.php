@@ -62,7 +62,7 @@ function escape($value)
 
         .roll {
             overflow-x: hidden;
-            overflow-y: scroll;
+            overflow-y: hidden;
             height: 80px;
             margin: 1rem 0;
             border: 1px solid #ddd;
@@ -70,6 +70,11 @@ function escape($value)
             font-family: "Lucida Console", Monaco, monospace;
             resize: vertical;
             font-size: 0.75rem;
+        }
+
+        .roll:focus {
+            overflow-x: hidden;
+            overflow-y: scroll;
         }
     </style>
 </head>
@@ -85,10 +90,10 @@ function escape($value)
             echo (new \DateTime($report['USER_CRASH_DATE']))->format(\DateTime::ISO8601)
             ?>
         </h3>
-        <div class="roll">
+        <div class="roll" tabindex="1">
             <?php echo nl2br(escape($report['LOGCAT'])); ?>
         </div>
-        <div class="roll">
+        <div class="roll" tabindex="1">
             <?php echo nl2br(escape($report['STACK_TRACE'])); ?>
         </div>
     </div>
