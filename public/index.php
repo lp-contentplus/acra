@@ -55,9 +55,7 @@ if ($input) {
         $connection->executeUpdate(
             'INSERT INTO log (log) VALUES (?)',
             [
-                json_encode([
-                    $input
-                ])
+                json_encode($input)
             ]
         );
     } catch (\Throwable $e) {
