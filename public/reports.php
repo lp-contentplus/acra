@@ -25,7 +25,7 @@ $limit = 25;
 
 $connection = DriverManager::getConnection($config['connection']);
 $results = $connection->executeQuery(
-    'SELECT * FROM log LIMIT ? OFFSET ?',
+    'SELECT * FROM log ORDER BY id DESC LIMIT ? OFFSET ?',
     [
         $limit, $limit * $page
     ]
