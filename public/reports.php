@@ -15,12 +15,10 @@ if (APPLICATION_ENV == 'dev') {
 require __DIR__ . '/../vendor/autoload.php';
 
 use Doctrine\DBAL\DriverManager;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 
 $config = require __DIR__ . '/../config.php';
 
-$page = 0;
+$page = $_GET['page'] ?? 0;
 $limit = 25;
 
 $connection = DriverManager::getConnection($config['connection']);
@@ -95,6 +93,10 @@ function escape($value)
         </div>
     </div>
 <?php endforeach ?>
+
+<p style="text-align: center; font-size: 2rem; margin: 2rem;">
+    <a href="?page=<?php echo $page + 1 ?>">Next page</a>
+</p>
 
 </body>
 </html>
