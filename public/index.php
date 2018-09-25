@@ -53,9 +53,10 @@ if ($input) {
     try {
         $connection = DriverManager::getConnection($config['connection']);
         $connection->executeUpdate(
-            'INSERT INTO log (log) VALUES (?)',
+            'INSERT INTO log (log, system) VALUES (?, ?)',
             [
-                json_encode($input)
+                json_encode($input),
+                $service
             ]
         );
     } catch (\Throwable $e) {
